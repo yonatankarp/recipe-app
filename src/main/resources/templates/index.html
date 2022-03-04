@@ -6,5 +6,48 @@
 </head>
 <body>
     <h1 th:text="'My Recipes!'">My Recipes!</h1>
+
+    <table id="vets" class="table table-striped">
+        <thead>
+        <tr>
+            <th>description</th>
+            <th>prep time</th>
+            <th>cook time</th>
+            <th>servings</th>
+            <th>source</th>
+            <th>url</th>
+            <th>directions</th>
+            <th>ingredients</th>
+            <th>image</th>
+            <th>difficulty</th>
+            <th>notes</th>
+            <th>categories</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="recipe : ${recipes}">
+            <td th:text="${recipe.description}"></td>
+            <td th:text="${recipe.prepTime}"></td>
+            <td th:text="${recipe.cookTime}"></td>
+            <td th:text="${recipe.servings}"></td>
+            <td th:text="${recipe.source}"></td>
+            <td th:text="${recipe.url}"></td>
+            <td th:text="${recipe.directions}"></td>
+            <td>
+                <ul th:each="ingredient : ${recipe.ingredients}">
+                    <li th:text="${ingredient.description}"></li>
+                </ul>
+            </td>
+            <td th:text="${recipe?.image}"></td>
+            <td th:text="${recipe.difficulty}"></td>
+            <td th:text="${recipe.notes.recipeNotes}"></td>
+            <td>
+                <ul th:each="category : ${recipe.categories}">
+                    <li th:text="${category.description}"></li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </body>
 </html>
