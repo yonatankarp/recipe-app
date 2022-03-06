@@ -5,4 +5,6 @@ import com.yonatankarp.recipeapp.model.Recipe;
 
 public interface RecipeService {
     Set<Recipe> getRecipes();
+
+    Recipe findById(final Long id);
 }
