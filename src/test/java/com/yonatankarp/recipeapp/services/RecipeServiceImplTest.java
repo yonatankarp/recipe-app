@@ -2,6 +2,8 @@ package com.yonatankarp.recipeapp.services;
 
 import java.util.HashSet;
 import java.util.Optional;
+import com.yonatankarp.recipeapp.converters.RecipeCommandToRecipe;
+import com.yonatankarp.recipeapp.converters.RecipeToRecipeCommand;
 import com.yonatankarp.recipeapp.model.Recipe;
 import com.yonatankarp.recipeapp.repositories.RecipeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,18 +30,25 @@ class RecipeServiceImplTest {
     @Mock
     private RecipeRepository recipeRepository;
 
+    @Mock
+    private RecipeCommandToRecipe recipeCommandToRecipe;
+
+    @Mock
+    private RecipeToRecipeCommand recipeToRecipeCommand;
+
     private RecipeServiceImpl recipeService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        recipeService = new RecipeServiceImpl(recipeRepository);
+        recipeService = new RecipeServiceImpl(recipeRepository, recipeCommandToRecipe, recipeToRecipeCommand);
     }
 
 
     @Test
-    public void getRecipeById() {
+    void getRecipeById() {
+        // Given
         final var recipe = Recipe.builder()
                 .id(RECIPE_ID)
                 .build();
@@ -47,24 +56,38 @@ class RecipeServiceImplTest {
 
         when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
 
+        // When
         final var recipeReturned = recipeService.findById(RECIPE_ID);
 
+        // Then
         assertNotNull(recipeReturned);
         verify(recipeRepository).findById(eq(RECIPE_ID));
         verify(recipeRepository, never()).findAll();
     }
 
     @Test
-    public void getRecipes() {
+    void getRecipes() {
+        // Given
         final var recipe = new Recipe();
         final var recipeData = new HashSet<Recipe>();
         recipeData.add(recipe);
 
         when(recipeRepository.findAll()).thenReturn(recipeData);
 
+        // When
         final var recipes = recipeService.getRecipes();
 
+        // Then
         assertEquals(recipes.size(), 1);
         verify(recipeRepository, times(1)).findAll();
+    }
+
+    @Test
+    void saveRecipeCommand() {
+        // Given
+
+        // When
+
+        // Then
     }
 }
