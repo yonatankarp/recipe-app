@@ -7,11 +7,18 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-@EqualsAndHashCode
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Category {
     @Id
