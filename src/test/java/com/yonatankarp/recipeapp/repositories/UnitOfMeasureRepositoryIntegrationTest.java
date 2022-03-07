@@ -19,7 +19,6 @@ class UnitOfMeasureRepositoryIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-
     }
 
     @Test
