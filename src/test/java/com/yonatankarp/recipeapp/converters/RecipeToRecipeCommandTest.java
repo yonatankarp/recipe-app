@@ -34,7 +34,7 @@ class RecipeToRecipeCommandTest {
     private RecipeToRecipeCommand converter;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         converter = new RecipeToRecipeCommand(
                 new CategoryToCategoryCommand(),
                 new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand()),
@@ -42,17 +42,17 @@ class RecipeToRecipeCommandTest {
     }
 
     @Test
-    public void testNullObject() {
+    void testNullObject() {
         assertNull(converter.convert(null));
     }
 
     @Test
-    public void testEmptyObject()  {
+    void testEmptyObject()  {
         assertNotNull(converter.convert(new Recipe()));
     }
 
     @Test
-    public void convert() {
+    void convert() {
         //given
         final var notes = Notes.builder()
                 .id(NOTES_ID)

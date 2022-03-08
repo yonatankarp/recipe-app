@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @RequestMapping("/recipe")
 public class RecipeController {
+
+    private static final String RECIPE_ATTRIBUTE_NAME = "recipe";
+
     private final RecipeService recipeService;
 
     @GetMapping("/new")
@@ -24,7 +27,7 @@ public class RecipeController {
 
         log.debug("Create new recipe");
 
-        model.addAttribute("recipe", new RecipeCommand());
+        model.addAttribute(RECIPE_ATTRIBUTE_NAME, new RecipeCommand());
 
         return "recipe/recipe_form";
     }
@@ -43,7 +46,7 @@ public class RecipeController {
 
         log.debug("Show recipe with id {}", id);
 
-        model.addAttribute("recipe", recipeService.findById(id));
+        model.addAttribute(RECIPE_ATTRIBUTE_NAME, recipeService.findById(id));
 
         return "recipe/show";
     }
@@ -51,7 +54,7 @@ public class RecipeController {
     @GetMapping("/{id}/update")
     public String updateRecipe(@PathVariable final Long id, final Model model) {
         log.debug("Update recipe with id {}", id);
-        model.addAttribute("recipe", recipeService.findCommandById(id));
+        model.addAttribute(RECIPE_ATTRIBUTE_NAME, recipeService.findCommandById(id));
         return "recipe/recipe_form";
     }
 

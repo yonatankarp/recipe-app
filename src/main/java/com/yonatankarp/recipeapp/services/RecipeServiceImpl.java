@@ -5,6 +5,7 @@ import java.util.Set;
 import com.yonatankarp.recipeapp.commands.RecipeCommand;
 import com.yonatankarp.recipeapp.converters.RecipeCommandToRecipe;
 import com.yonatankarp.recipeapp.converters.RecipeToRecipeCommand;
+import com.yonatankarp.recipeapp.exceptions.RecipeCommandConversionException;
 import com.yonatankarp.recipeapp.model.Recipe;
 import com.yonatankarp.recipeapp.repositories.RecipeRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,7 @@ public class RecipeServiceImpl implements RecipeService {
         final var detachedRecipe = recipeCommandToRecipe.convert(command);
 
         if(detachedRecipe == null) {
-            throw new RuntimeException("Recipe command: " + command + " could not be converted");
+            throw new RecipeCommandConversionException("Recipe command: " + command + " could not be converted");
         }
 
         final var savedRecipe = recipeRepository.save(detachedRecipe);

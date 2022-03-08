@@ -43,7 +43,7 @@ class IndexControllerTest {
     }
 
     @Test
-    public void getIndexPage() {
+    void getIndexPage() {
 
         // Given
         final Set<Recipe> recipes = new HashSet<>();

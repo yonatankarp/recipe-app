@@ -17,22 +17,22 @@ class UnitOfMeasureCommandToUnitOfMeasureTest {
     private UnitOfMeasureCommandToUnitOfMeasure converter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         converter = new UnitOfMeasureCommandToUnitOfMeasure();
     }
 
     @Test
-    public void testNullParameter()  {
+    void testNullParameter()  {
         assertNull(converter.convert(null));
     }
 
     @Test
-    public void testEmptyObject() {
+    void testEmptyObject() {
         assertNotNull(converter.convert(new UnitOfMeasureCommand()));
     }
 
     @Test
-    public void convert() {
+    void convert() {
         //given
         final var unitOfMeasureCommand = UnitOfMeasureCommand.builder()
                 .id(UOM_ID)

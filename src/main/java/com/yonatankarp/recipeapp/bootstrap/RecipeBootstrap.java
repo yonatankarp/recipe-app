@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.yonatankarp.recipeapp.exceptions.CategoryNotFoundException;
+import com.yonatankarp.recipeapp.exceptions.UnitOfMeasureNotFoundException;
 import com.yonatankarp.recipeapp.model.Category;
 import com.yonatankarp.recipeapp.model.Difficulty;
 import com.yonatankarp.recipeapp.model.Ingredient;
@@ -14,13 +16,24 @@ import com.yonatankarp.recipeapp.model.UnitOfMeasure;
 import com.yonatankarp.recipeapp.repositories.CategoryRepository;
 import com.yonatankarp.recipeapp.repositories.RecipeRepository;
 import com.yonatankarp.recipeapp.repositories.UnitOfMeasureRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@RequiredArgsConstructor
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
+
+    private static final String UOM_EACH = "each";
+    private static final String UOM_TABLESPOON = "tablespoon";
+    private static final String UOM_TEASPOON = "teaspoon";
+    private static final String UOM_DASH = "dash";
+    private static final String UOM_PINT = "pint";
+    private static final String UOM_CUP = "cup";
+    private static final String CATEGORY_AMERICAN = "american";
+    private static final String CATEGORY_MEXICAN = "mexican";
 
     private final CategoryRepository categoryRepository;
     private final RecipeRepository recipeRepository;
@@ -28,14 +41,6 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 
     private final Map<String, UnitOfMeasure> unitOfMeasures = new HashMap<>();
     private final Map<String, Category> categories = new HashMap<>();
-
-    public RecipeBootstrap(final CategoryRepository categoryRepository,
-                           final RecipeRepository recipeRepository,
-                           final UnitOfMeasureRepository unitOfMeasureRepository) {
-        this.categoryRepository = categoryRepository;
-        this.recipeRepository = recipeRepository;
-        this.unitOfMeasureRepository = unitOfMeasureRepository;
-    }
 
     @Transactional
     @Override
@@ -57,65 +62,65 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         // Get UOMs
         final var eachUomOptional = unitOfMeasureRepository.findByDescription("Each");
         if (eachUomOptional.isEmpty()) {
-            throw new RuntimeException("Expected UOM Not Found");
+            throw new UnitOfMeasureNotFoundException("Expected UOM 'Each' Not Found");
         }
 
         final var tableSpoonUomOptional = unitOfMeasureRepository.findByDescription("Tablespoon");
         if (tableSpoonUomOptional.isEmpty()) {
-            throw new RuntimeException("Expected UOM Not Found");
+            throw new UnitOfMeasureNotFoundException("Expected UOM 'Tablespoon' Not Found");
         }
 
         final var teaSpoonUomOptional = unitOfMeasureRepository.findByDescription("Teaspoon");
         if (teaSpoonUomOptional.isEmpty()) {
-            throw new RuntimeException("Expected UOM Not Found");
+            throw new UnitOfMeasureNotFoundException("Expected UOM 'Teaspoon' Not Found");
         }
 
         final var dashUomOptional = unitOfMeasureRepository.findByDescription("Dash");
         if (dashUomOptional.isEmpty()) {
-            throw new RuntimeException("Expected UOM Not Found");
+            throw new UnitOfMeasureNotFoundException("Expected UOM 'Dash' Not Found");
         }
 
         final var pintUomOptional = unitOfMeasureRepository.findByDescription("Pint");
         if (pintUomOptional.isEmpty()) {
-            throw new RuntimeException("Expected UOM Not Found");
+            throw new UnitOfMeasureNotFoundException("Expected UOM 'Pint' Not Found");
         }
 
         final var cupsUomOptional = unitOfMeasureRepository.findByDescription("Cup");
         if (cupsUomOptional.isEmpty()) {
-            throw new RuntimeException("Expected UOM Not Found");
+            throw new UnitOfMeasureNotFoundException("Expected UOM 'Cup' Not Found");
         }
 
-        unitOfMeasures.put("each", eachUomOptional.get());
-        unitOfMeasures.put("tablespoon", tableSpoonUomOptional.get());
-        unitOfMeasures.put("teaspoon", teaSpoonUomOptional.get());
-        unitOfMeasures.put("dash", dashUomOptional.get());
-        unitOfMeasures.put("pint", pintUomOptional.get());
-        unitOfMeasures.put("cup", cupsUomOptional.get());
+        unitOfMeasures.put(UOM_EACH, eachUomOptional.get());
+        unitOfMeasures.put(UOM_TABLESPOON, tableSpoonUomOptional.get());
+        unitOfMeasures.put(UOM_TEASPOON, teaSpoonUomOptional.get());
+        unitOfMeasures.put(UOM_DASH, dashUomOptional.get());
+        unitOfMeasures.put(UOM_PINT, pintUomOptional.get());
+        unitOfMeasures.put(UOM_CUP, cupsUomOptional.get());
     }
 
     private void loadCategories() {
         final var americanCategoryOptional = categoryRepository.findByDescription("American");
         if (americanCategoryOptional.isEmpty()) {
-            throw new RuntimeException("Expected Category Not Found");
+            throw new CategoryNotFoundException("Expected Category 'American' Not Found");
         }
 
         final var mexicanCategoryOptional = categoryRepository.findByDescription("Mexican");
         if (mexicanCategoryOptional.isEmpty()) {
-            throw new RuntimeException("Expected Category Not Found");
+            throw new CategoryNotFoundException("Expected Category 'Mexican' Not Found");
         }
 
-        categories.put("american", americanCategoryOptional.get());
-        categories.put("mexican", mexicanCategoryOptional.get());
+        categories.put(CATEGORY_AMERICAN, americanCategoryOptional.get());
+        categories.put(CATEGORY_MEXICAN, mexicanCategoryOptional.get());
     }
 
     private Recipe getGuacamole() {
-        final var eachUom = unitOfMeasures.get("each");
-        final var tableSpoonUom = unitOfMeasures.get("tablespoon");
-        final var teaspoonUom = unitOfMeasures.get("teaspoon");
-        final var dashUom = unitOfMeasures.get("dash");
+        final var eachUom = unitOfMeasures.get(UOM_EACH);
+        final var tableSpoonUom = unitOfMeasures.get(UOM_TABLESPOON);
+        final var teaspoonUom = unitOfMeasures.get(UOM_TEASPOON);
+        final var dashUom = unitOfMeasures.get(UOM_DASH);
 
-        final var americanCategory = categories.get("american");
-        final var mexicanCategory = categories.get("mexican");
+        final var americanCategory = categories.get(CATEGORY_AMERICAN);
+        final var mexicanCategory = categories.get(CATEGORY_MEXICAN);
 
         // Perfect Guacamole
         final var guacamole = new Recipe();
@@ -168,14 +173,14 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 
     private Recipe getTacos() {
 
-        final var eachUom = unitOfMeasures.get("each");
-        final var tableSpoonUom = unitOfMeasures.get("tablespoon");
-        final var teaspoonUom = unitOfMeasures.get("teaspoon");
-        final var pintUom = unitOfMeasures.get("pint");
-        final var cupsUom = unitOfMeasures.get("cup");
+        final var eachUom = unitOfMeasures.get(UOM_EACH);
+        final var tableSpoonUom = unitOfMeasures.get(UOM_TABLESPOON);
+        final var teaspoonUom = unitOfMeasures.get(UOM_TEASPOON);
+        final var pintUom = unitOfMeasures.get(UOM_PINT);
+        final var cupsUom = unitOfMeasures.get(UOM_CUP);
 
-        final var americanCategory = categories.get("american");
-        final var mexicanCategory = categories.get("mexican");
+        final var americanCategory = categories.get(CATEGORY_AMERICAN);
+        final var mexicanCategory = categories.get(CATEGORY_MEXICAN);
 
         // Spicy Grilled Chicken Tacos
         final var tacos = new Recipe();

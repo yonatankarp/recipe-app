@@ -17,22 +17,22 @@ class NotesCommandToNotesTest {
     private NotesCommandToNotes converter;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         converter = new NotesCommandToNotes();
     }
 
     @Test
-    public void testNullParameter() {
+    void testNullParameter() {
         assertNull(converter.convert(null));
     }
 
     @Test
-    public void testEmptyObject() {
+    void testEmptyObject() {
         assertNotNull(converter.convert(new NotesCommand()));
     }
 
     @Test
-    public void convert() {
+    void convert() {
         //given
         final var notesCommand = NotesCommand.builder()
                 .id(ID_VALUE)

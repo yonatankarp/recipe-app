@@ -23,22 +23,22 @@ class IngredientToIngredientCommandTest {
     private IngredientToIngredientCommand converter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         converter = new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand());
     }
 
     @Test
-    public void testNullConvert() {
+    void testNullConvert() {
         assertNull(converter.convert(null));
     }
 
     @Test
-    public void testEmptyObject() {
+    void testEmptyObject() {
         assertNotNull(converter.convert(new Ingredient()));
     }
 
     @Test
-    public void testConvertNullUOM() {
+    void testConvertNullUOM() {
         //given
         final var ingredient = Ingredient.builder()
                 .id(ID_VALUE)
@@ -60,7 +60,7 @@ class IngredientToIngredientCommandTest {
     }
 
     @Test
-    public void testConvertWithUom() {
+    void testConvertWithUom() {
         //given
         final var unitOfMeasure = UnitOfMeasure.builder().id(UOM_ID).build();
 

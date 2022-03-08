@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class RecipeServiceIntegrationTest {
+class RecipeServiceIntegrationTest {
 
     private static final String NEW_DESCRIPTION = "New Description";
 

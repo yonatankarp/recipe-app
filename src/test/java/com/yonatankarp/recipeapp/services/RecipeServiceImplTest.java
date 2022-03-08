@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -61,7 +60,7 @@ class RecipeServiceImplTest {
 
         // Then
         assertNotNull(recipeReturned);
-        verify(recipeRepository).findById(eq(RECIPE_ID));
+        verify(recipeRepository).findById(RECIPE_ID);
         verify(recipeRepository, never()).findAll();
     }
 
@@ -78,7 +77,7 @@ class RecipeServiceImplTest {
         final var recipes = recipeService.getRecipes();
 
         // Then
-        assertEquals(recipes.size(), 1);
+        assertEquals(1, recipes.size());
         verify(recipeRepository, times(1)).findAll();
     }
 
