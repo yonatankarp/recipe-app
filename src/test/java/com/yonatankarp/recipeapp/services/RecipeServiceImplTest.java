@@ -83,11 +83,14 @@ class RecipeServiceImplTest {
     }
 
     @Test
-    void saveRecipeCommand() {
+    void testDeleteById() {
         // Given
+        final var idToDelete = 2L;
 
         // When
+        recipeService.deleteById(idToDelete);
 
         // Then
+        verify(recipeRepository).deleteById(idToDelete);
     }
 }
