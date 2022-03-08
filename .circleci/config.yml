@@ -23,6 +23,10 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Analyze on SonarCloud
+          command: mvn verify sonar:sonar -Dsonar.projectKey=yonatankarp_recipe-app
+
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -40,4 +44,12 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn integration-test
+      - run:
+          name: Run Tests
+          command: mvn integration-test
+
+workflows:
+  main:
+    jobs:
+      - build:
+          context: SonarCloud
