@@ -35,7 +35,7 @@ class RecipeServiceImplTest {
     @Mock
     private RecipeToRecipeCommand recipeToRecipeCommand;
 
-    private RecipeServiceImpl recipeService;
+    private RecipeService recipeService;
 
     @BeforeEach
     void setUp() {

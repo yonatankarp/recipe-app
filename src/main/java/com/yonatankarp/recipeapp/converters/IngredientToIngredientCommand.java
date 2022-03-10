@@ -19,12 +19,15 @@ public class IngredientToIngredientCommand implements Converter<Ingredient, Ingr
     @Nullable
     @Override
     public IngredientCommand convert(final Ingredient source) {
-        if(source == null) {
+        if (source == null) {
             return null;
         }
 
+        final var recipeId = source.getRecipe() == null ? null : source.getRecipe().getId();
+
         return IngredientCommand.builder()
                 .id(source.getId())
+                .recipeId(recipeId)
                 .description(source.getDescription())
                 .amount(source.getAmount())
                 .uom(unitOfMeasureToUnitOfMeasureCommand.convert(source.getUom()))

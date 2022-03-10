@@ -14,11 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SuppressWarnings("ConstantConditions")
 class IngredientToIngredientCommandTest {
 
-    private static final Recipe RECIPE = new Recipe();
+    private static final Long RECIPE_ID = 1L;
+    private static final Long UOM_ID = 2L;
+    private static final Long INGREDIENT_ID = 1L;
+    private static final Recipe RECIPE = Recipe.builder().id(RECIPE_ID).build();
     private static final BigDecimal AMOUNT = new BigDecimal("1");
     private static final String DESCRIPTION = "Cheeseburger";
-    private static final Long UOM_ID = 2L;
-    private static final Long ID_VALUE = 1L;
 
     private IngredientToIngredientCommand converter;
 
@@ -41,7 +42,7 @@ class IngredientToIngredientCommandTest {
     void testConvertNullUOM() {
         //given
         final var ingredient = Ingredient.builder()
-                .id(ID_VALUE)
+                .id(INGREDIENT_ID)
                 .recipe(RECIPE)
                 .amount(AMOUNT)
                 .description(DESCRIPTION)
@@ -54,7 +55,7 @@ class IngredientToIngredientCommandTest {
         //then
         assertNotNull(ingredientCommand);
         assertNull(ingredientCommand.getUom());
-        assertEquals(ID_VALUE, ingredientCommand.getId());
+        assertEquals(INGREDIENT_ID, ingredientCommand.getId());
         assertEquals(AMOUNT, ingredientCommand.getAmount());
         assertEquals(DESCRIPTION, ingredientCommand.getDescription());
     }
@@ -65,7 +66,7 @@ class IngredientToIngredientCommandTest {
         final var unitOfMeasure = UnitOfMeasure.builder().id(UOM_ID).build();
 
         final var ingredient = Ingredient.builder()
-                .id(ID_VALUE)
+                .id(INGREDIENT_ID)
                 .recipe(RECIPE)
                 .amount(AMOUNT)
                 .description(DESCRIPTION)
@@ -77,7 +78,7 @@ class IngredientToIngredientCommandTest {
 
         //then
         assertNotNull(ingredientCommand);
-        assertEquals(ID_VALUE, ingredientCommand.getId());
+        assertEquals(INGREDIENT_ID, ingredientCommand.getId());
         assertNotNull(ingredientCommand.getUom());
         assertEquals(UOM_ID, ingredientCommand.getUom().getId());
         assertEquals(AMOUNT, ingredientCommand.getAmount());

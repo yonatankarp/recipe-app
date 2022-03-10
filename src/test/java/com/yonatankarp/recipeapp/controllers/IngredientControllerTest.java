@@ -1,6 +1,8 @@
 package com.yonatankarp.recipeapp.controllers;
 
+import com.yonatankarp.recipeapp.commands.IngredientCommand;
 import com.yonatankarp.recipeapp.commands.RecipeCommand;
+import com.yonatankarp.recipeapp.services.IngredientService;
 import com.yonatankarp.recipeapp.services.RecipeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,9 @@ class IngredientControllerTest {
     @Mock
     private RecipeService recipeService;
 
+    @Mock
+    private IngredientService ingredientService;
+
     private IngredientController controller;
 
     private MockMvc mockMvc;
@@ -30,7 +35,7 @@ class IngredientControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        controller = new IngredientController(recipeService);
+        controller = new IngredientController(recipeService, ingredientService);
 
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
@@ -49,5 +54,21 @@ class IngredientControllerTest {
 
         // Then
         verify(recipeService).findCommandById(1L);
+    }
+
+
+    @Test
+    void testShowIngredients() throws Exception {
+        // Given
+        final var ingredientCommand = new IngredientCommand();
+
+        // When
+        when(ingredientService.findByRecipeIdAndIngredientId(anyLong(), anyLong())).thenReturn(ingredientCommand);
+
+        // Then
+        mockMvc.perform(get("/recipe/1/ingredient/2/show"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("recipe/ingredient/show"))
+                .andExpect(model().attributeExists("ingredient"));
     }
 }

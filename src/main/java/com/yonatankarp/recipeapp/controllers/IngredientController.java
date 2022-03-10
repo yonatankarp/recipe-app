@@ -1,5 +1,6 @@
 package com.yonatankarp.recipeapp.controllers;
 
+import com.yonatankarp.recipeapp.services.IngredientService;
 import com.yonatankarp.recipeapp.services.RecipeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class IngredientController {
 
     private final RecipeService recipeService;
+    private final IngredientService ingredientService;
 
     @GetMapping("/{recipeId}/ingredients")
     public String listIngredients(@PathVariable final Long recipeId, final Model model) {
@@ -25,5 +27,14 @@ public class IngredientController {
         model.addAttribute("recipe", recipeService.findCommandById(recipeId));
 
         return "recipe/ingredient/list";
+    }
+
+    @GetMapping("/{recipeId}/ingredient/{ingredientId}/show")
+    public String showRecipeIngredient(@PathVariable final Long ingredientId,
+                                       @PathVariable final Long recipeId,
+                                       final Model model) {
+        model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(recipeId, ingredientId));
+
+        return "recipe/ingredient/show";
     }
 }
