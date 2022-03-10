@@ -29,9 +29,7 @@
                             <div class="row">
                                 <div class="col-md-3 form-group">
                                     <label>Recipe Description:</label>
-                                    <label>
-                                        <input type="text" class="form-control" th:field="*{description}"/>
-                                    </label>
+                                    <input type="text" class="form-control" th:field="*{description}"/>
                                 </div>
                             </div>
                             <div class="row">
@@ -40,61 +38,44 @@
                                 </div>
                                 <div class="col-md-9 form-group">
                                     <div class="radio">
-                                        <label>
-                                            <input type="checkbox" value=""/>
-                                            Category 1
-                                        </label>
+                                        <input type="checkbox" value=""/>
+                                        Category 1
                                     </div>
                                     <div class="radio" th:remove="all">
-                                        <label>
-                                            <input type="checkbox" value=""/>
-                                            Category 2
-                                        </label>
+                                        <input type="checkbox" value=""/>
+                                        Category 2
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-3 form-group">
                                     <label>Prep Time:</label>
-                                    <label>
-                                        <input type="text" class="form-control" th:field="*{prepTime}"/>
-                                    </label>
+                                    <input type="text" class="form-control" th:field="*{prepTime}"/>
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label>Cook time:</label>
-                                    <label>
-                                        <input type="text" class="form-control" th:field="*{cookTime}"/>
-                                    </label>
+                                    <input type="text" class="form-control" th:field="*{cookTime}"/>
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label>Difficulty:</label>
-                                    <label>
-                                        <select class="form-control">
-                                            <option>Easy</option>
-                                            <option>Medium</option>
-                                            <option>Hard</option>
-                                        </select>
-                                    </label>
+                                    <select class="form-control">
+                                        <option>Easy</option>
+                                        <option>Medium</option>
+                                        <option>Hard</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-3 form-group">
                                     <label>Servings:</label>
-                                    <label>
-                                        <input type="text" class="form-control" th:field="*{servings}"/>
-                                    </label>
+                                    <input type="text" class="form-control" th:field="*{servings}"/>
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label>Source:</label>
-                                    <label>
-                                        <input type="text" class="form-control" th:field="*{source}"/>
-                                    </label>
+                                    <input type="text" class="form-control" th:field="*{source}"/>
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label>URL:</label>
-                                    <label>
-                                        <input type="text" class="form-control" th:field="*{url}"/>
-                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -133,9 +114,8 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-12 form-group">
-                                    <label>
-                                        <textarea class="form-control" rows="3" th:field="*{directions}"></textarea>
-                                    </label></div>
+                                    <textarea class="form-control" rows="3" th:field="*{directions}"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -146,10 +126,8 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-12 form-group">
-                                    <label>
                                         <textarea class="form-control" rows="3"
                                                   th:field="*{notes.recipeNotes}"></textarea>
-                                    </label>
                                 </div>
                             </div>
                         </div>
