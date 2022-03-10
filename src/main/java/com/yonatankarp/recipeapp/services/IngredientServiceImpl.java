@@ -56,14 +56,28 @@ public class IngredientServiceImpl implements IngredientService {
             ingredientFound.setUom(unitOfMeasureRepository.findById(command.getUom().getId())
                     .orElseThrow(() -> new UnitOfMeasureNotFoundException("Unit of measure not found")));
         } else {
-            recipe.getIngredients().add(ingredientCommandToIngredient.convert(command));
+            final var ingredient = ingredientCommandToIngredient.convert(command);
+            ingredient.setRecipe(recipe);
+            recipe.getIngredients().add(ingredient);
         }
 
         final var savedRecipe = recipeRepository.save(recipe);
 
-        return ingredientToIngredientCommand.convert(savedRecipe.getIngredients().stream()
+        var savedIngredientOptional = savedRecipe.getIngredients().stream()
                 .filter(ingredient -> ingredient.getId().equals(command.getId()))
-                .findFirst()
-                .get());
+                .findFirst();
+
+
+        // If this was not persist we cannot use the id, therefore we're using best guess to match the ingredient
+        if(savedIngredientOptional.isEmpty()) {
+            savedIngredientOptional = savedRecipe.getIngredients().stream()
+                    .filter(ingredient -> ingredient.getDescription().equalsIgnoreCase(command.getDescription()))
+                    .filter(ingredient -> ingredient.getAmount().equals(command.getAmount()))
+                    .filter(ingredient -> ingredient.getUom().getId().equals(command.getUom().getId()))
+                    .findFirst();
+        }
+
+        // TODO: check for failure
+        return ingredientToIngredientCommand.convert(savedIngredientOptional.get());
     }
 }

@@ -1,6 +1,7 @@
 package com.yonatankarp.recipeapp.controllers;
 
 import com.yonatankarp.recipeapp.commands.IngredientCommand;
+import com.yonatankarp.recipeapp.commands.UnitOfMeasureCommand;
 import com.yonatankarp.recipeapp.services.IngredientService;
 import com.yonatankarp.recipeapp.services.RecipeService;
 import com.yonatankarp.recipeapp.services.UnitOfMeasureService;
@@ -55,12 +56,32 @@ public class IngredientController {
     }
 
     @PostMapping("/{recipeId}/ingredient")
-    public String saveOrUpdate(@ModelAttribute final IngredientCommand command){
+    public String saveOrUpdate(@ModelAttribute final IngredientCommand command) {
         final var savedCommand = ingredientService.saveIngredientCommand(command);
 
         log.debug("saved recipe id: {}", savedCommand.getRecipeId());
         log.debug("saved ingredient id: {}", savedCommand.getId());
 
-        return String.format("redirect:/recipe/%d/ingredient/%d/show" ,savedCommand.getRecipeId(), savedCommand.getId());
+        return String.format("redirect:/recipe/%d/ingredient/%d/show", savedCommand.getRecipeId(), savedCommand.getId());
+    }
+
+    @GetMapping("/{recipeId}/ingredient/new")
+    public String newIngredient(@PathVariable final Long recipeId, final Model model) {
+        // Make sure that we have a valid id value
+        final var recipeCommand = recipeService.findCommandById(recipeId);
+
+        // TODO: error handle if the command is null
+
+        // Need to return parent id for hidden form properties
+        final var ingredientCommand = IngredientCommand.builder()
+                .recipeId(recipeId)
+                .uom(new UnitOfMeasureCommand())
+                .build();
+
+        model.addAttribute("ingredient", ingredientCommand);
+
+        model.addAttribute("uomList", unitOfMeasureService.listAllUoms());
+
+        return "recipe/ingredient/ingredient_form";
     }
 }

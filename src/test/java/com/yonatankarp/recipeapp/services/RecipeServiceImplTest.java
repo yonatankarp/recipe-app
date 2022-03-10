@@ -44,7 +44,6 @@ class RecipeServiceImplTest {
         recipeService = new RecipeServiceImpl(recipeRepository, recipeCommandToRecipe, recipeToRecipeCommand);
     }
 
-
     @Test
     void getRecipeById() {
         // Given

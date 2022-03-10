@@ -26,6 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class IngredientControllerTest {
 
+    private static final Long RECIPE_ID = 1L;
+
     @Mock
     private RecipeService recipeService;
 
@@ -61,7 +63,7 @@ class IngredientControllerTest {
                 .andExpect(model().attributeExists("recipe"));
 
         // Then
-        verify(recipeService).findCommandById(1L);
+        verify(recipeService).findCommandById(RECIPE_ID);
     }
 
 
@@ -78,6 +80,24 @@ class IngredientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/ingredient/show"))
                 .andExpect(model().attributeExists("ingredient"));
+    }
+
+    @Test
+    void testNewIngredientForm() throws Exception {
+        // Given
+        final var recipeCommand = RecipeCommand.builder().id(RECIPE_ID).build();
+
+        // When
+        when(recipeService.findCommandById(anyLong())).thenReturn(recipeCommand);
+        when(unitOfMeasureService.listAllUoms()).thenReturn(new HashSet<>());
+
+        // Then
+        mockMvc.perform(get("/recipe/1/ingredient/new"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("recipe/ingredient/ingredient_form"))
+                .andExpect(model().attributeExists("ingredient"))
+                .andExpect(model().attributeExists("uomList"));
+        verify(recipeService).findCommandById(RECIPE_ID);
     }
 
     @Test
