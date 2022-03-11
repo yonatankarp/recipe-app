@@ -61,10 +61,10 @@ class IngredientServiceImplTest {
         // Given
         final var ingredient = Ingredient.builder().id(INGREDIENT_ID).recipe(RECIPE).build();
 
-        when(ingredientRepository.findByIdAndRecipeId(anyLong(), anyLong())).thenReturn(Optional.of(ingredient));
+        when(ingredientRepository.findByRecipeIdAndId(anyLong(), anyLong())).thenReturn(Optional.of(ingredient));
 
         // When
-        final var ingredientCommand = ingredientService.findByRecipeIdAndIngredientId(INGREDIENT_ID, RECIPE_ID);
+        final var ingredientCommand = ingredientService.findByRecipeIdAndIngredientId(RECIPE_ID, INGREDIENT_ID);
 
         // Then
         assertEquals(INGREDIENT_ID, ingredientCommand.getId());
@@ -74,7 +74,7 @@ class IngredientServiceImplTest {
     @Test
     void saveRecipeCommand() {
         // Given
-        final var command  = IngredientCommand.builder()
+        final var command = IngredientCommand.builder()
                 .id(INGREDIENT_ID)
                 .recipeId(RECIPE_ID)
                 .build();
@@ -97,7 +97,7 @@ class IngredientServiceImplTest {
     @Test
     void saveRecipeCommandIngredientNotFound() {
         // Given
-        final var command  = IngredientCommand.builder()
+        final var command = IngredientCommand.builder()
                 .id(15L)
                 .recipeId(RECIPE_ID)
                 .description("A nice description")
@@ -124,5 +124,17 @@ class IngredientServiceImplTest {
         assertEquals(INGREDIENT_ID, savedCommand.getId());
         verify(recipeRepository).findById(RECIPE_ID);
         verify(recipeRepository).save(any(Recipe.class));
+    }
+
+    @Test
+    void deleteByRecipeIdAndIngredientId() {
+        // Given
+        final var idToDelete = 2L;
+
+        // When
+        ingredientRepository.deleteByRecipeIdAndId(RECIPE_ID, idToDelete);
+
+        // Then
+        verify(ingredientRepository).deleteByRecipeIdAndId(RECIPE_ID, idToDelete);
     }
 }

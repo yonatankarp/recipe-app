@@ -26,7 +26,7 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public IngredientCommand findByRecipeIdAndIngredientId(Long recipeId, Long ingredientId) {
 
-        final var ingredientOptional = ingredientRepository.findByIdAndRecipeId(ingredientId, recipeId);
+        final var ingredientOptional = ingredientRepository.findByRecipeIdAndId(recipeId, ingredientId);
 
         if (ingredientOptional.isEmpty()) {
             // TODO: implement error handling
@@ -48,7 +48,7 @@ public class IngredientServiceImpl implements IngredientService {
 
         final var recipe = recipeOptional.get();
 
-        final var ingredientOptional = ingredientRepository.findByIdAndRecipeId(command.getId(), command.getRecipeId());
+        final var ingredientOptional = ingredientRepository.findByRecipeIdAndId(command.getRecipeId(), command.getId());
         if (ingredientOptional.isPresent()) {
             final var ingredientFound = ingredientOptional.get();
             ingredientFound.setDescription(command.getDescription());
@@ -57,8 +57,10 @@ public class IngredientServiceImpl implements IngredientService {
                     .orElseThrow(() -> new UnitOfMeasureNotFoundException("Unit of measure not found")));
         } else {
             final var ingredient = ingredientCommandToIngredient.convert(command);
-            ingredient.setRecipe(recipe);
-            recipe.getIngredients().add(ingredient);
+            if(ingredient != null) {
+                ingredient.setRecipe(recipe);
+                recipe.getIngredients().add(ingredient);
+            }
         }
 
         final var savedRecipe = recipeRepository.save(recipe);
@@ -79,5 +81,11 @@ public class IngredientServiceImpl implements IngredientService {
 
         // TODO: check for failure
         return ingredientToIngredientCommand.convert(savedIngredientOptional.get());
+    }
+
+    @Transactional
+    @Override
+    public void deleteByRecipeIdAndIngredientId(final Long recipeId, final Long ingredientId) {
+        ingredientRepository.deleteByRecipeIdAndId(recipeId, ingredientId);
     }
 }
