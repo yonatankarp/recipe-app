@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ImageControllerTest {
+class ImageControllerTest {
 
     private static final Long RECIPE_ID = 1L;
 
@@ -73,7 +73,7 @@ public class ImageControllerTest {
         // Given
         final var fileContent = "fake image text".getBytes();
 
-        final var command  =  RecipeCommand.builder()
+        final var command = RecipeCommand.builder()
                 .id(RECIPE_ID)
                 .image(fileContent)
                 .build();

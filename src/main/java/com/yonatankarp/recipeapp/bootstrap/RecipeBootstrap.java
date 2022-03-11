@@ -139,19 +139,19 @@ public class RecipeBootstrap implements CommandLineRunner {
                         "Read more: https://www.simplyrecipes.com/recipes/perfect_guacamole/#ixzz4jvoun5ws")
                 .build();
 
-        final var ingredients = new HashSet<Ingredient>();
-        ingredients.add(createIngredient("ripe avocados", "2", eachUom));
-        ingredients.add(createIngredient("Kosher salt", ".5", teaspoonUom));
-        ingredients.add(createIngredient("fresh lime juice or lemon juice", "2", tableSpoonUom));
-        ingredients.add(createIngredient("minced red onion or thinly sliced green onion", "2", tableSpoonUom));
-        ingredients.add(createIngredient("serrano chiles, stems and seeds removed, minced", "2", eachUom));
-        ingredients.add(createIngredient("Cilantro", "2", tableSpoonUom));
-        ingredients.add(createIngredient("freshly grated black pepper", "2", dashUom));
-        ingredients.add(createIngredient("ripe tomato, seeds and pulp removed, chopped", ".5", eachUom));
+        final var recipeIngredients = new HashSet<Ingredient>();
+        recipeIngredients.add(createIngredient("ripe avocados", "2", eachUom));
+        recipeIngredients.add(createIngredient("Kosher salt", ".5", teaspoonUom));
+        recipeIngredients.add(createIngredient("fresh lime juice or lemon juice", "2", tableSpoonUom));
+        recipeIngredients.add(createIngredient("minced red onion or thinly sliced green onion", "2", tableSpoonUom));
+        recipeIngredients.add(createIngredient("serrano chiles, stems and seeds removed, minced", "2", eachUom));
+        recipeIngredients.add(createIngredient("Cilantro", "2", tableSpoonUom));
+        recipeIngredients.add(createIngredient("freshly grated black pepper", "2", dashUom));
+        recipeIngredients.add(createIngredient("ripe tomato, seeds and pulp removed, chopped", ".5", eachUom));
 
-        final var categories = new HashSet<Category>();
-        categories.add(americanCategory);
-        categories.add(mexicanCategory);
+        final var recipeCategories = new HashSet<Category>();
+        recipeCategories.add(americanCategory);
+        recipeCategories.add(mexicanCategory);
 
         final var guacamole = Recipe.builder()
                 .description("Perfect Guacamole")
@@ -172,16 +172,16 @@ public class RecipeBootstrap implements CommandLineRunner {
                         "\n" +
                         "Read more: https://www.simplyrecipes.com/recipes/perfect_guacamole/#ixzz4jvpiV9Sd")
                 .notes(guacamoleNotes)
-                .ingredients(ingredients)
-                .categories(categories)
+                .ingredients(recipeIngredients)
+                .categories(recipeCategories)
                 .url("https://www.simplyrecipes.com/recipes/perfect_guacamole/")
                 .source("Simply Recipes")
                 .image(image)
                 .build();
 
         guacamoleNotes.setRecipe(guacamole);
-        ingredients.forEach(ingredient -> ingredient.setRecipe(guacamole));
-        categories.forEach(category -> category.getRecipes().add(guacamole));
+        recipeIngredients.forEach(ingredient -> ingredient.setRecipe(guacamole));
+        recipeCategories.forEach(category -> category.getRecipes().add(guacamole));
 
         return guacamole;
     }
@@ -210,32 +210,32 @@ public class RecipeBootstrap implements CommandLineRunner {
                         "Read more: https://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/#ixzz4jvu7Q0MJ")
                 .build();
 
-        final var ingredients = new HashSet<Ingredient>();
-        ingredients.add(createIngredient("Ancho Chili Powder", "2", tableSpoonUom));
+        final var recipeIngredients = new HashSet<Ingredient>();
+        recipeIngredients.add(createIngredient("Ancho Chili Powder", "2", tableSpoonUom));
 
-        ingredients.add(createIngredient("Ancho Chili Powder", "2", tableSpoonUom));
-        ingredients.add(createIngredient("Dried Oregano", "1", teaspoonUom));
-        ingredients.add(createIngredient("Dried Cumin", "1", teaspoonUom));
-        ingredients.add(createIngredient("Sugar", "1", teaspoonUom));
-        ingredients.add(createIngredient("Salt", ".5", teaspoonUom));
-        ingredients.add(createIngredient("Clove of Garlic, Choppedr", "1", eachUom));
-        ingredients.add(createIngredient("finely grated orange zestr", "1", tableSpoonUom));
-        ingredients.add(createIngredient("fresh-squeezed orange juice", "3", tableSpoonUom));
-        ingredients.add(createIngredient("Olive Oil", "2", tableSpoonUom));
-        ingredients.add(createIngredient("boneless chicken thighs", "4", tableSpoonUom));
-        ingredients.add(createIngredient("small corn tortillasr", "8", eachUom));
-        ingredients.add(createIngredient("packed baby arugula", "3", cupsUom));
-        ingredients.add(createIngredient("medium ripe avocados, slic", "2", eachUom));
-        ingredients.add(createIngredient("radishes, thinly sliced", "4", eachUom));
-        ingredients.add(createIngredient("cherry tomatoes, halved", ".5", pintUom));
-        ingredients.add(createIngredient("red onion, thinly sliced", ".25", eachUom));
-        ingredients.add(createIngredient("Roughly chopped cilantro", "4", eachUom));
-        ingredients.add(createIngredient("cup sour cream thinned with 1/4 cup milk", "4", cupsUom));
-        ingredients.add(createIngredient("lime, cut into wedges", "4", eachUom));
+        recipeIngredients.add(createIngredient("Ancho Chili Powder", "2", tableSpoonUom));
+        recipeIngredients.add(createIngredient("Dried Oregano", "1", teaspoonUom));
+        recipeIngredients.add(createIngredient("Dried Cumin", "1", teaspoonUom));
+        recipeIngredients.add(createIngredient("Sugar", "1", teaspoonUom));
+        recipeIngredients.add(createIngredient("Salt", ".5", teaspoonUom));
+        recipeIngredients.add(createIngredient("Clove of Garlic, Choppedr", "1", eachUom));
+        recipeIngredients.add(createIngredient("finely grated orange zestr", "1", tableSpoonUom));
+        recipeIngredients.add(createIngredient("fresh-squeezed orange juice", "3", tableSpoonUom));
+        recipeIngredients.add(createIngredient("Olive Oil", "2", tableSpoonUom));
+        recipeIngredients.add(createIngredient("boneless chicken thighs", "4", tableSpoonUom));
+        recipeIngredients.add(createIngredient("small corn tortillasr", "8", eachUom));
+        recipeIngredients.add(createIngredient("packed baby arugula", "3", cupsUom));
+        recipeIngredients.add(createIngredient("medium ripe avocados, slic", "2", eachUom));
+        recipeIngredients.add(createIngredient("radishes, thinly sliced", "4", eachUom));
+        recipeIngredients.add(createIngredient("cherry tomatoes, halved", ".5", pintUom));
+        recipeIngredients.add(createIngredient("red onion, thinly sliced", ".25", eachUom));
+        recipeIngredients.add(createIngredient("Roughly chopped cilantro", "4", eachUom));
+        recipeIngredients.add(createIngredient("cup sour cream thinned with 1/4 cup milk", "4", cupsUom));
+        recipeIngredients.add(createIngredient("lime, cut into wedges", "4", eachUom));
 
-        final var categories = new HashSet<Category>();
-        categories.add(americanCategory);
-        categories.add(mexicanCategory);
+        final var recipeCategories = new HashSet<Category>();
+        recipeCategories.add(americanCategory);
+        recipeCategories.add(mexicanCategory);
 
         final var tacos = Recipe.builder()
                 .description("Spicy Grilled Chicken Taco")
@@ -259,13 +259,13 @@ public class RecipeBootstrap implements CommandLineRunner {
                 .url("https://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/")
                 .source("Simply Recipes")
                 .image(image)
-                .ingredients(ingredients)
-                .categories(categories)
+                .ingredients(recipeIngredients)
+                .categories(recipeCategories)
                 .build();
 
         tacoNotes.setRecipe(tacos);
-        ingredients.forEach(ingredient -> ingredient.setRecipe(tacos));
-        categories.forEach(category -> category.getRecipes().add(tacos));
+        recipeIngredients.forEach(ingredient -> ingredient.setRecipe(tacos));
+        recipeCategories.forEach(category -> category.getRecipes().add(tacos));
 
         return tacos;
     }

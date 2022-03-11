@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/recipe")
 public class IngredientController {
 
+    private static final String RECIPE_ATTRIBUTE_NAME = "recipe";
+    private static final String INGREDIENT_ATTRIBUTE_NAME = "ingredient";
+    private static final String UOM_ATTRIBUTE_NAME = "uomList";
+
     private final RecipeService recipeService;
     private final IngredientService ingredientService;
     private final UnitOfMeasureService unitOfMeasureService;
@@ -30,7 +34,7 @@ public class IngredientController {
         log.debug("Getting ingredients for recipe id {}", recipeId);
 
         // We're using command object to avoid lazy load error in thymeleaf.
-        model.addAttribute("recipe", recipeService.findCommandById(recipeId));
+        model.addAttribute(RECIPE_ATTRIBUTE_NAME, recipeService.findCommandById(recipeId));
 
         return "recipe/ingredient/list";
     }
@@ -39,7 +43,7 @@ public class IngredientController {
     public String showRecipeIngredient(@PathVariable final Long ingredientId,
                                        @PathVariable final Long recipeId,
                                        final Model model) {
-        model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(recipeId, ingredientId));
+        model.addAttribute(INGREDIENT_ATTRIBUTE_NAME, ingredientService.findByRecipeIdAndIngredientId(recipeId, ingredientId));
 
         return "recipe/ingredient/show";
     }
@@ -48,9 +52,9 @@ public class IngredientController {
     public String updateRecipeIngredient(@PathVariable final Long ingredientId,
                                          @PathVariable final Long recipeId,
                                          final Model model) {
-        model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(recipeId, ingredientId));
+        model.addAttribute(INGREDIENT_ATTRIBUTE_NAME, ingredientService.findByRecipeIdAndIngredientId(recipeId, ingredientId));
 
-        model.addAttribute("uomList", unitOfMeasureService.listAllUoms());
+        model.addAttribute(UOM_ATTRIBUTE_NAME, unitOfMeasureService.listAllUoms());
 
         return "recipe/ingredient/ingredient_form";
     }
@@ -78,6 +82,10 @@ public class IngredientController {
         // Make sure that we have a valid id value
         final var recipeCommand = recipeService.findCommandById(recipeId);
 
+        if(recipeCommand == null) {
+            log.error("Unable to create new ingredient for recipe id {}", recipeId);
+        }
+
         // TODO: error handle if the command is null
 
         // Need to return parent id for hidden form properties
@@ -86,9 +94,9 @@ public class IngredientController {
                 .uom(new UnitOfMeasureCommand())
                 .build();
 
-        model.addAttribute("ingredient", ingredientCommand);
+        model.addAttribute(INGREDIENT_ATTRIBUTE_NAME, ingredientCommand);
 
-        model.addAttribute("uomList", unitOfMeasureService.listAllUoms());
+        model.addAttribute(UOM_ATTRIBUTE_NAME, unitOfMeasureService.listAllUoms());
 
         return "recipe/ingredient/ingredient_form";
     }
