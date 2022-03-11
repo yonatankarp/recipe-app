@@ -18,6 +18,7 @@ import com.yonatankarp.recipeapp.repositories.CategoryRepository;
 import com.yonatankarp.recipeapp.repositories.RecipeRepository;
 import com.yonatankarp.recipeapp.repositories.UnitOfMeasureRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,8 @@ public class RecipeBootstrap implements CommandLineRunner {
 
     private final Map<String, UnitOfMeasure> unitOfMeasures = new HashMap<>();
     private final Map<String, Category> categories = new HashMap<>();
+
+    private final ClassLoader classLoader = RecipeBootstrap.class.getClassLoader();
 
 
     @Transactional
@@ -123,6 +126,8 @@ public class RecipeBootstrap implements CommandLineRunner {
         final var americanCategory = categories.get(CATEGORY_AMERICAN);
         final var mexicanCategory = categories.get(CATEGORY_MEXICAN);
 
+        final var image = loadImage("guacamole400x400.jpeg");
+
         // Perfect Guacamole
         final var guacamoleNotes = Notes.builder()
                 .recipeNotes("For a very quick guacamole just take a 1/4 cup of salsa and mix it in with your mashed avocados.\n" +
@@ -131,7 +136,7 @@ public class RecipeBootstrap implements CommandLineRunner {
                         "To extend a limited supply of avocados, add either sour cream or cottage cheese to your guacamole dip. Purists may be horrified, but so what? It tastes great.\n" +
                         "\n" +
                         "\n" +
-                        "Read more: http://www.simplyrecipes.com/recipes/perfect_guacamole/#ixzz4jvoun5ws")
+                        "Read more: https://www.simplyrecipes.com/recipes/perfect_guacamole/#ixzz4jvoun5ws")
                 .build();
 
         final var ingredients = new HashSet<Ingredient>();
@@ -165,12 +170,13 @@ public class RecipeBootstrap implements CommandLineRunner {
                         "Chilling tomatoes hurts their flavor, so if you want to add chopped tomato to your guacamole, add it just before serving.\n" +
                         "\n" +
                         "\n" +
-                        "Read more: http://www.simplyrecipes.com/recipes/perfect_guacamole/#ixzz4jvpiV9Sd")
+                        "Read more: https://www.simplyrecipes.com/recipes/perfect_guacamole/#ixzz4jvpiV9Sd")
                 .notes(guacamoleNotes)
                 .ingredients(ingredients)
                 .categories(categories)
-                .url("http://www.simplyrecipes.com/recipes/perfect_guacamole/")
+                .url("https://www.simplyrecipes.com/recipes/perfect_guacamole/")
                 .source("Simply Recipes")
+                .image(image)
                 .build();
 
         guacamoleNotes.setRecipe(guacamole);
@@ -191,6 +197,8 @@ public class RecipeBootstrap implements CommandLineRunner {
         final var americanCategory = categories.get(CATEGORY_AMERICAN);
         final var mexicanCategory = categories.get(CATEGORY_MEXICAN);
 
+        final var image = loadImage("tacos400x400.jpeg");
+
         // Spicy Grilled Chicken Tacos
         final var tacoNotes = Notes.builder()
                 .recipeNotes("We have a family motto and it is this: Everything goes better in a tortilla.\n" +
@@ -199,7 +207,7 @@ public class RecipeBootstrap implements CommandLineRunner {
                         "First, I marinate the chicken briefly in a spicy paste of ancho chile powder, oregano, cumin, and sweet orange juice while the grill is heating. You can also use this time to prepare the taco toppings.\n" +
                         "Grill the chicken, then let it rest while you warm the tortillas. Now you are ready to assemble the tacos and dig in. The whole meal comes together in about 30 minutes!\n" +
                         "\n" +
-                        "Read more: http://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/#ixzz4jvu7Q0MJ")
+                        "Read more: https://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/#ixzz4jvu7Q0MJ")
                 .build();
 
         final var ingredients = new HashSet<Ingredient>();
@@ -246,10 +254,11 @@ public class RecipeBootstrap implements CommandLineRunner {
                         "5 Assemble the tacos: Slice the chicken into strips. On each tortilla, place a small handful of arugula. Top with chicken slices, sliced avocado, radishes, tomatoes, and onion slices. Drizzle with the thinned sour cream. Serve with lime wedges.\n" +
                         "\n" +
                         "\n" +
-                        "Read more: http://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/#ixzz4jvtrAnNm")
+                        "Read more: https://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/#ixzz4jvtrAnNm")
                 .notes(tacoNotes)
-                .url("http://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/")
+                .url("https://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/")
                 .source("Simply Recipes")
+                .image(image)
                 .ingredients(ingredients)
                 .categories(categories)
                 .build();
@@ -265,5 +274,10 @@ public class RecipeBootstrap implements CommandLineRunner {
                                         final String amount,
                                         final UnitOfMeasure uom) {
         return new Ingredient(description, new BigDecimal(amount), uom);
+    }
+
+    @SneakyThrows
+    private byte[] loadImage(final String imageName) {
+        return classLoader.getResourceAsStream("static/images/" + imageName).readAllBytes();
     }
 }

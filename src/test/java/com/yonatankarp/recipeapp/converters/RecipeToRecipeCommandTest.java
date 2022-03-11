@@ -30,6 +30,7 @@ class RecipeToRecipeCommandTest {
     private static final Long INGREDIENT_ID_1 = 3L;
     private static final Long INGREDIENT_ID_2 = 4L;
     private static final Long NOTES_ID = 9L;
+    private static final byte[] IMAGE = "fake image".getBytes();
 
     private RecipeToRecipeCommand converter;
 
@@ -76,6 +77,7 @@ class RecipeToRecipeCommandTest {
                 .servings(SERVINGS)
                 .source(SOURCE)
                 .url(URL)
+                .image(IMAGE)
                 .notes(notes)
                 .categories(categories)
                 .ingredients(ingredients)
@@ -95,6 +97,7 @@ class RecipeToRecipeCommandTest {
         assertEquals(SERVINGS, command.getServings());
         assertEquals(SOURCE, command.getSource());
         assertEquals(URL, command.getUrl());
+        assertEquals(IMAGE.length, command.getImage().length);
         assertEquals(NOTES_ID, command.getNotes().getId());
         assertEquals(2, command.getCategories().size());
         assertEquals(2, command.getIngredients().size());
