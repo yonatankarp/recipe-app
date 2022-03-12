@@ -102,6 +102,16 @@ class IngredientControllerTest {
     }
 
     @Test
+    void testNewIngredientFormRecipeNotFound() throws Exception {
+
+        when(recipeService.findCommandById(anyLong())).thenReturn(null);
+
+        // Then
+        mockMvc.perform(get("/recipe/1/ingredient/new"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void testUpdateIngredientForm() throws Exception {
         // Given
         final var ingredientCommand = new IngredientCommand();

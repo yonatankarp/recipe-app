@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import com.yonatankarp.recipeapp.converters.RecipeCommandToRecipe;
 import com.yonatankarp.recipeapp.converters.RecipeToRecipeCommand;
+import com.yonatankarp.recipeapp.exceptions.NotFoundException;
 import com.yonatankarp.recipeapp.model.Recipe;
 import com.yonatankarp.recipeapp.repositories.RecipeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -58,9 +60,17 @@ class RecipeServiceImplTest {
         final var recipeReturned = recipeService.findById(RECIPE_ID);
 
         // Then
-        assertNotNull(recipeReturned);
+        assertNotNull(recipeReturned, "Null recipe returned");
         verify(recipeRepository).findById(RECIPE_ID);
         verify(recipeRepository, never()).findAll();
+    }
+
+    @Test
+    void getRecipeByIdTestNotFound() {
+        assertThrows(NotFoundException.class, () -> {
+            when(recipeRepository.findById(anyLong())).thenReturn(Optional.empty());
+            recipeService.findById(1L);
+        });
     }
 
     @Test

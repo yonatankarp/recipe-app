@@ -2,6 +2,7 @@ package com.yonatankarp.recipeapp.controllers;
 
 import com.yonatankarp.recipeapp.commands.IngredientCommand;
 import com.yonatankarp.recipeapp.commands.UnitOfMeasureCommand;
+import com.yonatankarp.recipeapp.exceptions.NotFoundException;
 import com.yonatankarp.recipeapp.services.IngredientService;
 import com.yonatankarp.recipeapp.services.RecipeService;
 import com.yonatankarp.recipeapp.services.UnitOfMeasureService;
@@ -83,10 +84,9 @@ public class IngredientController {
         final var recipeCommand = recipeService.findCommandById(recipeId);
 
         if(recipeCommand == null) {
-            log.error("Unable to create new ingredient for recipe id {}", recipeId);
+            log.error("Recipe with id {} not found to create new ingredient.", recipeId);
+            throw new NotFoundException("Recipe with id " + recipeId + " not found to create new ingredient.");
         }
-
-        // TODO: error handle if the command is null
 
         // Need to return parent id for hidden form properties
         final var ingredientCommand = IngredientCommand.builder()

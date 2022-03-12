@@ -3,7 +3,7 @@ package com.yonatankarp.recipeapp.services;
 import com.yonatankarp.recipeapp.commands.IngredientCommand;
 import com.yonatankarp.recipeapp.converters.IngredientCommandToIngredient;
 import com.yonatankarp.recipeapp.converters.IngredientToIngredientCommand;
-import com.yonatankarp.recipeapp.exceptions.UnitOfMeasureNotFoundException;
+import com.yonatankarp.recipeapp.exceptions.NotFoundException;
 import com.yonatankarp.recipeapp.repositories.IngredientRepository;
 import com.yonatankarp.recipeapp.repositories.RecipeRepository;
 import com.yonatankarp.recipeapp.repositories.UnitOfMeasureRepository;
@@ -29,8 +29,8 @@ public class IngredientServiceImpl implements IngredientService {
         final var ingredientOptional = ingredientRepository.findByRecipeIdAndId(recipeId, ingredientId);
 
         if (ingredientOptional.isEmpty()) {
-            // TODO: implement error handling
-            log.error("Ingredient id not found: {}", ingredientId);
+            log.error("Ingredient not found for id: {}", ingredientId);
+            throw new NotFoundException("Ingredient not found for id" + ingredientId);
         }
 
         return ingredientToIngredientCommand.convert(ingredientOptional.get());
@@ -41,9 +41,8 @@ public class IngredientServiceImpl implements IngredientService {
     public IngredientCommand saveIngredientCommand(final IngredientCommand command) {
         final var recipeOptional = recipeRepository.findById(command.getRecipeId());
         if (recipeOptional.isEmpty()) {
-            // TODO: error handling
             log.error("Recipe not found for id {}", command.getRecipeId());
-            return new IngredientCommand();
+            throw new NotFoundException("Recipe not found for id: " + command.getRecipeId());
         }
 
         final var recipe = recipeOptional.get();
@@ -54,7 +53,7 @@ public class IngredientServiceImpl implements IngredientService {
             ingredientFound.setDescription(command.getDescription());
             ingredientFound.setAmount(command.getAmount());
             ingredientFound.setUom(unitOfMeasureRepository.findById(command.getUom().getId())
-                    .orElseThrow(() -> new UnitOfMeasureNotFoundException("Unit of measure not found")));
+                    .orElseThrow(() -> new NotFoundException("Unit of measure not found")));
         } else {
             final var ingredient = ingredientCommandToIngredient.convert(command);
             if(ingredient != null) {
@@ -66,9 +65,8 @@ public class IngredientServiceImpl implements IngredientService {
         final var savedRecipe = recipeRepository.save(recipe);
 
         var savedIngredientOptional = savedRecipe.getIngredients().stream()
-                .filter(ingredient -> ingredient.getId().equals(command.getId()))
+                .filter(ingredient ->  ingredient.getId().equals(command.getId()))
                 .findFirst();
-
 
         // If this was not persist we cannot use the id, therefore we're using best guess to match the ingredient
         if(savedIngredientOptional.isEmpty()) {
@@ -79,7 +77,11 @@ public class IngredientServiceImpl implements IngredientService {
                     .findFirst();
         }
 
-        // TODO: check for failure
+        if(savedIngredientOptional.isEmpty()) {
+            log.error("No ingredient was found to update");
+            throw new NotFoundException("No ingredient was found to update");
+        }
+
         return ingredientToIngredientCommand.convert(savedIngredientOptional.get());
     }
 

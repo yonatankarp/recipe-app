@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import com.yonatankarp.recipeapp.exceptions.CategoryNotFoundException;
-import com.yonatankarp.recipeapp.exceptions.UnitOfMeasureNotFoundException;
+import com.yonatankarp.recipeapp.exceptions.NotFoundException;
 import com.yonatankarp.recipeapp.model.Category;
 import com.yonatankarp.recipeapp.model.Difficulty;
 import com.yonatankarp.recipeapp.model.Ingredient;
@@ -66,32 +65,32 @@ public class RecipeBootstrap implements CommandLineRunner {
         // Get UOMs
         final var eachUomOptional = unitOfMeasureRepository.findByDescription("Each");
         if (eachUomOptional.isEmpty()) {
-            throw new UnitOfMeasureNotFoundException("Expected UOM 'Each' Not Found");
+            throw new NotFoundException("Expected UOM 'Each' Not Found");
         }
 
         final var tableSpoonUomOptional = unitOfMeasureRepository.findByDescription("Tablespoon");
         if (tableSpoonUomOptional.isEmpty()) {
-            throw new UnitOfMeasureNotFoundException("Expected UOM 'Tablespoon' Not Found");
+            throw new NotFoundException("Expected UOM 'Tablespoon' Not Found");
         }
 
         final var teaSpoonUomOptional = unitOfMeasureRepository.findByDescription("Teaspoon");
         if (teaSpoonUomOptional.isEmpty()) {
-            throw new UnitOfMeasureNotFoundException("Expected UOM 'Teaspoon' Not Found");
+            throw new NotFoundException("Expected UOM 'Teaspoon' Not Found");
         }
 
         final var dashUomOptional = unitOfMeasureRepository.findByDescription("Dash");
         if (dashUomOptional.isEmpty()) {
-            throw new UnitOfMeasureNotFoundException("Expected UOM 'Dash' Not Found");
+            throw new NotFoundException("Expected UOM 'Dash' Not Found");
         }
 
         final var pintUomOptional = unitOfMeasureRepository.findByDescription("Pint");
         if (pintUomOptional.isEmpty()) {
-            throw new UnitOfMeasureNotFoundException("Expected UOM 'Pint' Not Found");
+            throw new NotFoundException("Expected UOM 'Pint' Not Found");
         }
 
         final var cupsUomOptional = unitOfMeasureRepository.findByDescription("Cup");
         if (cupsUomOptional.isEmpty()) {
-            throw new UnitOfMeasureNotFoundException("Expected UOM 'Cup' Not Found");
+            throw new NotFoundException("Expected UOM 'Cup' Not Found");
         }
 
         unitOfMeasures.put(UOM_EACH, eachUomOptional.get());
@@ -105,12 +104,12 @@ public class RecipeBootstrap implements CommandLineRunner {
     private void loadCategories() {
         final var americanCategoryOptional = categoryRepository.findByDescription("American");
         if (americanCategoryOptional.isEmpty()) {
-            throw new CategoryNotFoundException("Expected Category 'American' Not Found");
+            throw new NotFoundException("Expected Category 'American' Not Found");
         }
 
         final var mexicanCategoryOptional = categoryRepository.findByDescription("Mexican");
         if (mexicanCategoryOptional.isEmpty()) {
-            throw new CategoryNotFoundException("Expected Category 'Mexican' Not Found");
+            throw new NotFoundException("Expected Category 'Mexican' Not Found");
         }
 
         categories.put(CATEGORY_AMERICAN, americanCategoryOptional.get());
