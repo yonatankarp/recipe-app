@@ -5,7 +5,7 @@ import java.util.Set;
 import com.yonatankarp.recipeapp.commands.RecipeCommand;
 import com.yonatankarp.recipeapp.converters.RecipeCommandToRecipe;
 import com.yonatankarp.recipeapp.converters.RecipeToRecipeCommand;
-import com.yonatankarp.recipeapp.exceptions.RecipeCommandConversionException;
+import com.yonatankarp.recipeapp.exceptions.NotFoundException;
 import com.yonatankarp.recipeapp.model.Recipe;
 import com.yonatankarp.recipeapp.repositories.RecipeRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,13 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Recipe findById(final Long id) {
-        return recipeRepository.findById(id).orElse(null);
+        final var recipeOptional = recipeRepository.findById(id);
+
+        if (recipeOptional.isEmpty()) {
+            throw new NotFoundException("Recipe not found for id " + id);
+        }
+
+        return recipeOptional.get();
     }
 
     @Transactional
@@ -46,8 +52,8 @@ public class RecipeServiceImpl implements RecipeService {
     public RecipeCommand saveRecipeCommand(final RecipeCommand command) {
         final var detachedRecipe = recipeCommandToRecipe.convert(command);
 
-        if(detachedRecipe == null) {
-            throw new RecipeCommandConversionException("Recipe command: " + command + " could not be converted");
+        if (detachedRecipe == null) {
+            throw new NotFoundException("Recipe command: " + command + " could not be converted");
         }
 
         final var savedRecipe = recipeRepository.save(detachedRecipe);

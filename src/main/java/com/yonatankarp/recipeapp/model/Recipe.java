@@ -29,6 +29,7 @@ import lombok.Singular;
 @AllArgsConstructor
 @Entity
 public class Recipe {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

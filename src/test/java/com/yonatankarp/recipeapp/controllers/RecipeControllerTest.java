@@ -1,6 +1,7 @@
 package com.yonatankarp.recipeapp.controllers;
 
 import com.yonatankarp.recipeapp.commands.RecipeCommand;
+import com.yonatankarp.recipeapp.exceptions.NotFoundException;
 import com.yonatankarp.recipeapp.model.Recipe;
 import com.yonatankarp.recipeapp.services.RecipeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +51,14 @@ class RecipeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/show"))
                 .andExpect(model().attributeExists("recipe"));
+    }
+
+    @Test
+    void testRecipeNotFound() throws Exception {
+        when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/recipe/" + RECIPE_ID + "/show"))
+                .andExpect(status().isNotFound());
     }
 
     @Test

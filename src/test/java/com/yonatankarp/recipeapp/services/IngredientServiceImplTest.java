@@ -8,6 +8,7 @@ import com.yonatankarp.recipeapp.converters.IngredientCommandToIngredient;
 import com.yonatankarp.recipeapp.converters.IngredientToIngredientCommand;
 import com.yonatankarp.recipeapp.converters.UnitOfMeasureCommandToUnitOfMeasure;
 import com.yonatankarp.recipeapp.converters.UnitOfMeasureToUnitOfMeasureCommand;
+import com.yonatankarp.recipeapp.exceptions.NotFoundException;
 import com.yonatankarp.recipeapp.model.Ingredient;
 import com.yonatankarp.recipeapp.model.Recipe;
 import com.yonatankarp.recipeapp.model.UnitOfMeasure;
@@ -20,6 +21,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.verify;
@@ -72,6 +75,17 @@ class IngredientServiceImplTest {
     }
 
     @Test
+    void findByRecipeIdAndIngredientIdIngredientNotFound() {
+        when(ingredientRepository.findByRecipeIdAndId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        final var exception = assertThrows(NotFoundException.class, () ->
+                ingredientService.findByRecipeIdAndIngredientId(RECIPE_ID, INGREDIENT_ID));
+
+
+        assertTrue(exception.getMessage().contains("Ingredient not found"));
+    }
+
+    @Test
     void saveRecipeCommand() {
         // Given
         final var command = IngredientCommand.builder()
@@ -95,6 +109,77 @@ class IngredientServiceImplTest {
     }
 
     @Test
+    void saveRecipeCommandRecipeNotFound() {
+        final var command = IngredientCommand.builder().build();
+
+        when(recipeRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        final var exception = assertThrows(NotFoundException.class, () ->
+                ingredientService.saveIngredientCommand(command));
+
+        assertTrue(exception.getMessage().contains("Recipe not found"));
+    }
+
+    @Test
+    void saveRecipeCommandUOMNotFound() {
+        final var command = IngredientCommand.builder()
+                .id(RECIPE_ID)
+                .recipeId(RECIPE_ID)
+                .uom(UnitOfMeasureCommand.builder().id(UOM_ID).build())
+                .build();
+
+        final var recipe = Recipe.builder().id(RECIPE_ID).build();
+        when(recipeRepository.findById(anyLong())).thenReturn(Optional.of(recipe));
+
+        final var ingredient = Ingredient.builder().id(INGREDIENT_ID).build();
+        when(ingredientRepository.findByRecipeIdAndId(anyLong(), anyLong())).thenReturn(Optional.of(ingredient));
+
+        when(unitOfMeasureRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        final var exception = assertThrows(NotFoundException.class, () ->
+                ingredientService.saveIngredientCommand(command));
+
+        assertTrue(exception.getMessage().contains("Unit of measure not found"));
+    }
+
+    @Test
+    void saveRecipeCommandIngredientToUpdateNotFound() {
+
+        final var command = IngredientCommand.builder()
+                .id(RECIPE_ID)
+                .recipeId(RECIPE_ID)
+                .uom(UnitOfMeasureCommand.builder().id(UOM_ID).build())
+                .build();
+
+        final var ingredient = Ingredient.builder().id(INGREDIENT_ID).build();
+        when(ingredientRepository.findByRecipeIdAndId(anyLong(), anyLong())).thenReturn(Optional.of(ingredient));
+
+        final var unitOfMeasure = UnitOfMeasure.builder().id(UOM_ID).build();
+        when(unitOfMeasureRepository.findById(anyLong())).thenReturn(Optional.of(unitOfMeasure));
+
+        final var recipe = Recipe.builder().id(RECIPE_ID).ingredient(ingredient).build();
+        when(recipeRepository.findById(anyLong())).thenReturn(Optional.of(recipe));
+
+        final var savedRecipe = Recipe.builder()
+                .id(2L)
+                .ingredient(Ingredient.builder()
+                        .id(2L)
+                        .description("random description")
+                        .amount(BigDecimal.ZERO)
+                        .uom(UnitOfMeasure.builder().build())
+                        .build())
+                .build();
+
+        when(recipeRepository.save(any())).thenReturn(savedRecipe);
+
+
+        final var exception = assertThrows(NotFoundException.class, () ->
+                ingredientService.saveIngredientCommand(command));
+
+        assertTrue(exception.getMessage().contains("No ingredient was found"));
+    }
+
+    @Test
     void saveRecipeCommandIngredientNotFound() {
         // Given
         final var command = IngredientCommand.builder()
@@ -105,14 +190,16 @@ class IngredientServiceImplTest {
                 .uom(UnitOfMeasureCommand.builder().id(UOM_ID).build())
                 .build();
 
-        final var savedRecipe = new Recipe();
         final var ingredient = Ingredient.builder()
                 .id(INGREDIENT_ID)
                 .description("A nice description")
                 .amount(BigDecimal.TEN)
                 .uom(UnitOfMeasure.builder().id(UOM_ID).build())
                 .build();
-        savedRecipe.getIngredients().add(ingredient);
+
+        final var savedRecipe = Recipe.builder()
+                .ingredient(ingredient)
+                .build();
 
         when(recipeRepository.findById(anyLong())).thenReturn(Optional.of(new Recipe()));
         when(recipeRepository.save(any())).thenReturn(savedRecipe);

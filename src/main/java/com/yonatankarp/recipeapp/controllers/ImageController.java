@@ -2,11 +2,11 @@ package com.yonatankarp.recipeapp.controllers;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import com.yonatankarp.recipeapp.services.ImageService;
 import com.yonatankarp.recipeapp.services.RecipeService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Controller;
@@ -40,6 +40,7 @@ public class ImageController {
         return String.format("redirect:/recipe/%d/show", recipeId);
     }
 
+    @SneakyThrows
     @GetMapping("recipe/{recipeId}/recipe_image")
     public void renderImageFromDB(@PathVariable final Long recipeId, final HttpServletResponse response) {
         final var recipeCommand = recipeService.findCommandById(recipeId);
@@ -54,9 +55,6 @@ public class ImageController {
 
             try (final var inputStream = new ByteArrayInputStream(byteArray)) {
                 IOUtils.copy(inputStream, response.getOutputStream());
-            } catch (final IOException e) {
-                // TODO: error handling
-                log.error("Unable to render image of recipe id {}", recipeId);
             }
         }
     }
