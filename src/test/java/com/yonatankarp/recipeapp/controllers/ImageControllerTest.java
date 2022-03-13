@@ -1,6 +1,7 @@
 package com.yonatankarp.recipeapp.controllers;
 
 import com.yonatankarp.recipeapp.commands.RecipeCommand;
+import com.yonatankarp.recipeapp.exceptions.NotFoundException;
 import com.yonatankarp.recipeapp.services.ImageService;
 import com.yonatankarp.recipeapp.services.RecipeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 class ImageControllerTest {
 
@@ -31,16 +33,17 @@ class ImageControllerTest {
     @Mock
     private RecipeService recipeService;
 
-    private ImageController controller;
-
     private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        controller = new ImageController(imageService, recipeService);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        final var controller = new ImageController(imageService, recipeService);
+
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(new ControllerExceptionHandler())
+                .build();
     }
 
     @Test
@@ -63,7 +66,7 @@ class ImageControllerTest {
 
         mockMvc.perform(multipart("/recipe/" + RECIPE_ID + "/image").file(multipartFile))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(header().string("Location", "/recipe/1/show"));
+                .andExpect(header().string("Location", "/recipe/" + RECIPE_ID + "/show"));
 
         verify(imageService).saveImageFile(RECIPE_ID, multipartFile);
     }
@@ -88,5 +91,21 @@ class ImageControllerTest {
         // Then
         final var responseBytes = response.getContentAsByteArray();
         assertEquals(fileContent.length, responseBytes.length);
+    }
+
+    @Test
+    void testRecipeNotFound() throws Exception {
+        when(recipeService.findCommandById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/recipe/" + RECIPE_ID + "/recipe_image"))
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("404error"));
+    }
+
+    @Test
+    void testRecipeBadFormat() throws Exception {
+        mockMvc.perform(get("/recipe/asdf/recipe_image"))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("400error"));
     }
 }
