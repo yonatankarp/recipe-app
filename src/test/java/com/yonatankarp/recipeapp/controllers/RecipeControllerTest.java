@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RecipeControllerTest {
 
     private static final Long RECIPE_ID = 1L;
+    private static final Long RECIPE_COMMAND_ID = 2L;
 
     @Mock
     private RecipeService recipeService;
@@ -50,7 +51,7 @@ class RecipeControllerTest {
 
         when(recipeService.findById(any())).thenReturn(recipe);
 
-        mockMvc.perform(get("/recipe/1/show"))
+        mockMvc.perform(get("/recipe/" + RECIPE_ID + "/show"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/show"))
                 .andExpect(model().attributeExists("recipe"));
@@ -82,24 +83,43 @@ class RecipeControllerTest {
 
     @Test
     void testPostNewRecipeForm() throws Exception {
-        final var command = RecipeCommand.builder().id(2L).build();
+        final var command = RecipeCommand.builder().id(RECIPE_COMMAND_ID).build();
 
         when(recipeService.saveRecipeCommand(any())).thenReturn(command);
 
         mockMvc.perform(post("/recipe")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("id", "")
+                        .param("description", "some description")
+                        .param("directions", "some directions")
                 )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/recipe/2/show"));
+                .andExpect(view().name("redirect:/recipe/" + RECIPE_COMMAND_ID + "/show"));
+    }
+
+    @Test
+    void testPostNewRecipeFormValidationFail() throws Exception {
+        final var command = RecipeCommand.builder().id(RECIPE_COMMAND_ID).build();
+
+        when(recipeService.saveRecipeCommand(any())).thenReturn(command);
+
+        mockMvc.perform(post("/recipe")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("id", "")
+                        .param("cookTime", "3000")
+                )
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("recipe"))
+                .andExpect(view().name("recipe/recipe_form"));
     }
 
     @Test
     void testGetUpdateView() throws Exception {
-        final var command = RecipeCommand.builder().id(2L).build();
+        final var command = RecipeCommand.builder().id(RECIPE_COMMAND_ID).build();
 
         when(recipeService.findCommandById(anyLong())).thenReturn(command);
 
-        mockMvc.perform(get("/recipe/1/update"))
+        mockMvc.perform(get("/recipe/" + RECIPE_ID + "/update"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/recipe_form"))
                 .andExpect(model().attributeExists("recipe"));
@@ -107,10 +127,10 @@ class RecipeControllerTest {
 
     @Test
     void testDeleteAction() throws Exception {
-        mockMvc.perform(get("/recipe/1/delete"))
+        mockMvc.perform(get("/recipe/" + RECIPE_ID + "/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
 
-        verify(recipeService).deleteById(1L);
+        verify(recipeService).deleteById(RECIPE_ID);
     }
 }
